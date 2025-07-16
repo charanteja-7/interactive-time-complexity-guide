@@ -10,11 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chosen Palette: Slate & Amber -->
-    <!-- Application Structure Plan: A single-page dashboard structure with a clear, visual-first approach. The centerpiece is an interactive chart comparing complexity growth rates, immediately making the abstract concept tangible. This is followed by a "Deep Dive" section where users can select a specific complexity to explore its details (explanation, code example), promoting focused, active learning. A final section presents the practical application table. This structure was chosen over a linear document to turn passive reading into an active, exploratory experience, which is more effective for learning technical concepts. -->
+    <!-- Application Structure Plan: A single-page dashboard structure with a clear, visual-first approach. The centerpiece is an interactive chart comparing time complexity growth rates. This is followed by a "Deep Dive" section for time complexities, and new dedicated sections for "Space Complexity," "Amortized Analysis," "Best/Worst/Average Cases," "Data Structure Complexities," and "Algorithm Design Paradigms." Each section uses tabs or dropdowns for focused exploration. A final section presents the practical application table. This modular, tabbed structure was chosen to organize a large amount of information into digestible, interactive chunks, allowing users to navigate and learn at their own pace, enhancing understanding over a linear document. -->
     <!-- Visualization & Content Choices: 
-        1. Report Info: Hierarchy of complexities (O(1) to O(N^2)). Goal: Compare growth rates visually. Viz/Method: Interactive Line Chart. Interaction: Hovering over lines reveals details. Justification: A chart conveys the magnitude of difference between complexities far better than text. Library: Chart.js.
-        2. Report Info: Detailed explanations of each complexity. Goal: Organize information for focused learning. Viz/Method: Clickable tabs/buttons. Interaction: Clicking a complexity button dynamically displays its specific explanation and code snippet. Justification: Avoids a wall of text, allowing users to learn one concept at a time. Library/Method: Vanilla JS DOM manipulation.
-        3. Report Info: Practical implications table. Goal: Provide actionable guidance. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the ideal format for this data. Library/Method: HTML + Tailwind CSS.
+        1. Report Info: Hierarchy of time complexities (O(1) to O(2^N)). Goal: Compare growth rates visually. Viz/Method: Interactive Line Chart. Interaction: Hovering over lines reveals details. Justification: A chart conveys the magnitude of difference between complexities far better than text. Library: Chart.js.
+        2. Report Info: Detailed explanations of each time complexity. Goal: Organize information for focused learning. Viz/Method: Clickable tabs/buttons. Interaction: Clicking a complexity button dynamically displays its specific explanation and code snippet. Justification: Avoids a wall of text, allowing users to learn one concept at a time. Library/Method: Vanilla JS DOM manipulation.
+        3. Report Info: Detailed explanations of each space complexity. Goal: Organize information for focused learning. Viz/Method: Clickable tabs/buttons. Interaction: Clicking a complexity button dynamically displays its specific explanation and code snippet. Justification: Similar to time complexity, this provides structured learning for space. Library/Method: Vanilla JS DOM manipulation.
+        4. Report Info: Amortized analysis concept. Goal: Explain a nuanced complexity concept. Viz/Method: Textual explanation with a code example. Interaction: N/A, focus on clarity. Justification: Best conveyed through clear text and a simple example. Library/Method: HTML + Tailwind CSS.
+        5. Report Info: Best, Worst, Average cases. Goal: Illustrate variability in algorithm performance. Viz/Method: Dropdown for algorithm selection, text/code display for cases. Interaction: Dropdown selection updates displayed case details. Justification: Allows users to see how context changes complexity. Library/Method: Vanilla JS DOM manipulation.
+        6. Report Info: Data structure complexities. Goal: Provide a quick reference for common data structures. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the most efficient way to present this comparative data. Library/Method: HTML + Tailwind CSS.
+        7. Report Info: Algorithm design paradigms. Goal: Connect complexity to design strategies. Viz/Method: Clickable tabs/buttons for each paradigm, text/example display. Interaction: Clicking a paradigm button displays its definition and examples. Justification: Organizes algorithms by approach, aiding conceptual understanding. Library/Method: Vanilla JS DOM manipulation.
+        8. Report Info: Practical implications table. Goal: Provide actionable guidance. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the ideal format for this data. Library/Method: HTML + Tailwind CSS.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -44,16 +49,107 @@
                 </div>
             </section>
 
-            <section id="deep-dive" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Complexity Deep Dive</h2>
-                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="tab-container">
+            <section id="time-complexity-deep-dive" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Time Complexity Deep Dive</h2>
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="time-tab-container">
                 </div>
 
-                <div id="content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                <div id="time-content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
                 </div>
             </section>
 
-            <section id="practical-guide">
+            <section id="space-complexity-deep-dive" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Memory: Space Complexity Deep Dive</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Beyond time, algorithms also consume memory. Understand how space usage scales with input size.</p>
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="space-tab-container">
+                </div>
+
+                <div id="space-content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                </div>
+            </section>
+
+            <section id="amortized-analysis" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Understanding Amortized Analysis</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Some operations aren't consistently fast, but their average cost over a sequence of operations is efficient. This is amortized analysis.</p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-amber-600">Dynamic Array (ArrayList) `add` Operation</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-slate-600 mb-4">When you add an element to a dynamic array, it's usually an `O(1)` operation. However, if the array runs out of space, it needs to allocate a new, larger array and copy all existing elements over. This reallocation is an `O(N)` operation.</p>
+                            <p class="text-slate-600 mb-4">Despite the occasional `O(N)` cost, if the array doubles its size each time it reallocates, the *average* cost per `add` operation over a long sequence of additions remains `O(1)`. This is because the expensive `O(N)` operations are spread out over many `O(1)` operations, and the total cost is proportional to the number of elements.</p>
+                            <p class="text-sm text-slate-500"><strong class="font-semibold text-slate-600">Key Idea:</strong> The total cost of `N` operations is `O(N)`, making the average cost per operation `O(1)`.</p>
+                        </div>
+                        <div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <pre><code>// Conceptual Java ArrayList add operation
+void add(element) {
+    if (size == capacity) {
+        // Double capacity
+        newCapacity = capacity * 2;
+        newArray = new Array[newCapacity];
+        // Copy all elements (O(N) operation)
+        for (int i = 0; i < size; i++) {
+            newArray[i] = oldArray[i];
+        }
+        oldArray = newArray;
+        capacity = newCapacity;
+    }
+    array[size++] = element; // O(1) operation
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="case-analysis" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Best, Worst, and Average Case Analysis</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">An algorithm's performance can vary depending on the input. Explore how different scenarios affect complexity.</p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <div class="mb-4">
+                        <label for="case-selector" class="block text-slate-700 text-lg font-semibold mb-2">Choose an algorithm:</label>
+                        <select id="case-selector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-slate-700">
+                        </select>
+                    </div>
+                    
+                    <div id="case-display" class="grid md:grid-cols-1 gap-8">
+                        <div id="best-case-content" class="p-4 bg-slate-100 rounded-lg"></div>
+                        <div id="average-case-content" class="p-4 bg-slate-100 rounded-lg"></div>
+                        <div id="worst-case-content" class="p-4 bg-slate-100 rounded-lg"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="data-structure-complexity" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Data Structure Operation Complexities</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto">Understanding the efficiency of fundamental data structure operations is key to designing performant algorithms.</p>
+                <div class="overflow-x-auto bg-white rounded-xl shadow-lg p-4">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="border-b-2 border-slate-200">
+                            <tr>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Data Structure</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Access</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Search</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Insertion</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Deletion</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Space</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ds-complexity-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="algorithm-paradigms" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Algorithm Design Paradigms & Complexities</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Different problem-solving strategies lead to distinct performance characteristics.</p>
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="paradigm-tab-container">
+                </div>
+
+                <div id="paradigm-content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                </div>
+            </section>
+
+            <section id="practical-guide" class="mb-16">
                 <h2 class="text-3xl font-bold text-center mb-8">Practical Guide: Is My Algorithm Fast Enough?</h2>
                  <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto">In a typical coding challenge with a 1-second time limit, a computer can perform roughly 10⁸ operations. Use this table to estimate which time complexity is feasible for a given input size `N`.</p>
                 <div class="overflow-x-auto bg-white rounded-xl shadow-lg p-4">
@@ -70,6 +166,29 @@
                     </table>
                 </div>
             </section>
+
+            <section id="explore-snippets" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">💡 Explore Example Snippets 💡</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Select a common algorithm from the dropdown to view its code and understand its time complexity.</p>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <div class="mb-4">
+                        <label for="example-selector" class="block text-slate-700 text-lg font-semibold mb-2">Choose an example:</label>
+                        <select id="example-selector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-slate-700">
+                        </select>
+                    </div>
+                    
+                    <div id="example-display" class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto min-h-[150px] flex items-center justify-center">
+                            <pre><code id="example-code">Select an example to see its code.</code></pre>
+                        </div>
+                        <div class="bg-slate-100 text-slate-700 p-4 rounded-lg min-h-[150px] flex items-center justify-center">
+                            <div id="example-analysis" class="text-left">
+                                <p class="text-slate-500">Analysis will appear here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
         
         <footer class="text-center mt-16 py-6 border-t border-slate-200">
@@ -81,7 +200,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            const complexitiesData = {
+            const timeComplexitiesData = {
                 'O(1)': {
                     title: 'O(1) - Constant Time',
                     explanation: 'The algorithm takes the same amount of time to execute, regardless of the input size. This is the most efficient complexity.',
@@ -120,6 +239,33 @@
                 }
             };
 
+            const spaceComplexitiesData = {
+                'O(1)': {
+                    title: 'O(1) - Constant Space',
+                    explanation: 'The algorithm uses a fixed amount of memory, regardless of the input size. This is the most memory-efficient complexity.',
+                    example: 'Swapping two variables.',
+                    code: `void swap(int a, int b) {\n    int temp = a;\n    a = b;\n    b = temp;\n}`
+                },
+                'O(log N)': {
+                    title: 'O(log N) - Logarithmic Space',
+                    explanation: 'The memory usage grows very slowly as the input size increases. This often occurs in recursive algorithms where the depth of recursion is logarithmic (e.g., binary search call stack).',
+                    example: 'Recursive binary search (due to call stack).',
+                    code: `int binarySearchRecursiveSpace(int[] arr, int target, int low, int high) {\n    if (low > high) return -1;\n    int mid = low + (high - low) / 2;\n    if (arr[mid] == target) return mid;\n    if (arr[mid] < target) {\n        return binarySearchRecursiveSpace(arr, target, mid + 1, high);\n    } else {\n        return binarySearchRecursiveSpace(arr, target, low, mid - 1);\n    }\n}`
+                },
+                'O(N)': {
+                    title: 'O(N) - Linear Space',
+                    explanation: 'The memory usage grows linearly with the input size. This is common when storing a copy of the input or creating data structures proportional to the input size.',
+                    example: 'Creating a new array to store processed elements.',
+                    code: `int[] copyArray(int[] original) {\n    int[] newArray = new int[original.length];\n    for (int i = 0; i < original.length; i++) {\n        newArray[i] = original[i];\n    }\n    return newArray;\n}`
+                },
+                'O(N²)': {
+                    title: 'O(N²) - Quadratic Space',
+                    explanation: 'The memory usage grows proportionally to the square of the input size. This often occurs when dealing with 2D data structures like matrices.',
+                    example: 'Storing a matrix or a 2D array.',
+                    code: `int[][] createMatrix(int N) {\n    int[][] matrix = new int[N][N];\n    // ... populate matrix ...\n    return matrix;\n}`
+                }
+            };
+
             const practicalData = [
                 { size: 'N <= 12', complexity: 'O(N!)', example: 'Permutations, brute-force TSP' },
                 { size: 'N <= 25', complexity: 'O(2ⁿ)', example: 'Brute-force subsets, recursive DP' },
@@ -130,31 +276,172 @@
                 { size: 'Any', complexity: 'O(log N)', example: 'Binary search on sorted data' }
             ];
 
-            const tabContainer = document.getElementById('tab-container');
-            const contentContainer = document.getElementById('content-container');
+            const exampleSnippets = {
+                'linearSearch': {
+                    name: 'Linear Search',
+                    code: `function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) {\n      return i;\n    }\n  }\n  return -1;\n}`,
+                    complexity: 'O(N)',
+                    explanation: 'This algorithm iterates through the array once. In the worst case, it checks every element, so its time grows linearly with the input size N.'
+                },
+                'bubbleSort': {
+                    name: 'Bubble Sort',
+                    code: `function bubbleSort(arr) {\n  let n = arr.length;\n  for (let i = 0; i < n - 1; i++) {\n    for (let j = 0; j < n - i - 1; j++) {\n      if (arr[j] > arr[j + 1]) {\n        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];\n      }\n    }\n  }\n  return arr;\n}`,
+                    complexity: 'O(N²)',
+                    explanation: 'Bubble Sort involves nested loops, where for each element, it potentially compares and swaps with every other element. This results in quadratic time complexity.'
+                },
+                'binarySearch': {
+                    name: 'Binary Search (Recursive)',
+                    code: `function binarySearchRecursive(arr, target, low, high) {\n  if (low > high) return -1;\n  let mid = Math.floor((low + high) / 2);\n  if (arr[mid] === target) return mid;\n  if (arr[mid] < target) {\n    return binarySearchRecursive(arr, target, mid + 1, high);\n  } else {\n    return binarySearchRecursive(arr, target, low, mid - 1);\n  }\n}`,
+                    complexity: 'O(log N)',
+                    explanation: 'Binary search repeatedly divides the search interval in half. This halving process means the number of operations grows logarithmically with the input size.'
+                },
+                'factorial': {
+                    name: 'Factorial (Recursive)',
+                    code: `function factorial(n) {\n  if (n === 0) return 1;\n  return n * factorial(n - 1);\n}`,
+                    complexity: 'O(N)',
+                    explanation: 'The recursive factorial function makes N recursive calls. Each call performs a constant amount of work, leading to linear time complexity.'
+                }
+            };
+
+            const caseAnalysisData = {
+                'linearSearch': {
+                    name: 'Linear Search',
+                    best: {
+                        complexity: 'O(1)',
+                        explanation: 'Best case occurs when the target element is the first element in the array. The algorithm finds it immediately with a single comparison.'
+                    },
+                    average: {
+                        complexity: 'O(N)',
+                        explanation: 'On average, the target element is found somewhere in the middle of the array, requiring about N/2 comparisons. This still scales linearly with N.'
+                    },
+                    worst: {
+                        complexity: 'O(N)',
+                        explanation: 'Worst case occurs when the target element is the last element in the array, or not present at all. The algorithm must check every element, leading to N comparisons.'
+                    },
+                    code: `function linearSearch(arr, target) {\n  for (let i = 0; i < arr.length; i++) {\n    if (arr[i] === target) {\n      return i;\n    }\n  }\n  return -1;\n}`
+                },
+                'quickSort': {
+                    name: 'Quick Sort',
+                    best: {
+                        complexity: 'O(N log N)',
+                        explanation: 'Best case occurs when the pivot selection consistently divides the array into two roughly equal halves. This leads to a balanced recursion tree and optimal performance.'
+                    },
+                    average: {
+                        complexity: 'O(N log N)',
+                        explanation: 'On average, Quick Sort performs very well, with its performance typically matching the best case due to randomized pivot selection or good pivot strategies.'
+                    },
+                    worst: {
+                        complexity: 'O(N²)',
+                        explanation: 'Worst case occurs when the pivot selection consistently results in highly unbalanced partitions (e.g., always picking the smallest or largest element). This leads to a skewed recursion tree, degrading performance to quadratic.'
+                    },
+                    code: `function quickSort(arr, low, high) {\n  if (low < high) {\n    let pi = partition(arr, low, high);\n    quickSort(arr, low, pi - 1);\n    quickSort(arr, pi + 1, high);\n  }\n}`
+                }
+            };
+
+            const dsComplexityData = [
+                { ds: 'Array', access: 'O(1)', search: 'O(N)', insertion: 'O(N)', deletion: 'O(N)', space: 'O(N)' },
+                { ds: 'Linked List', access: 'O(N)', search: 'O(N)', insertion: 'O(1)', deletion: 'O(1)', space: 'O(N)' },
+                { ds: 'Hash Table', access: 'O(1)*', search: 'O(1)*', insertion: 'O(1)*', deletion: 'O(1)*', space: 'O(N)' },
+                { ds: 'Binary Search Tree', access: 'O(log N)*', search: 'O(log N)*', insertion: 'O(log N)*', deletion: 'O(log N)*', space: 'O(N)' },
+                { ds: 'Stack', access: 'O(N)', search: 'O(N)', insertion: 'O(1)', deletion: 'O(1)', space: 'O(N)' },
+                { ds: 'Queue', access: 'O(N)', search: 'O(N)', insertion: 'O(1)', deletion: 'O(1)', space: 'O(N)' }
+            ];
+
+            const paradigmData = {
+                'Brute Force': {
+                    explanation: 'Brute force algorithms try every possible solution until the correct one is found. They are often simple to implement but can be very inefficient.',
+                    examples: [
+                        { name: 'Linear Search', complexity: 'O(N)' },
+                        { name: 'Checking all substrings', complexity: 'O(N²)' },
+                        { name: 'Traveling Salesperson Problem (naive)', complexity: 'O(N!)' }
+                    ]
+                },
+                'Divide and Conquer': {
+                    explanation: 'This paradigm breaks a problem into smaller subproblems of the same type, solves them recursively, and then combines their solutions to solve the original problem.',
+                    examples: [
+                        { name: 'Merge Sort', complexity: 'O(N log N)' },
+                        { name: 'Quick Sort', complexity: 'O(N log N) average' },
+                        { name: 'Binary Search', complexity: 'O(log N)' }
+                    ]
+                },
+                'Dynamic Programming': {
+                    explanation: 'Dynamic Programming solves complex problems by breaking them down into simpler overlapping subproblems and storing the results of subproblems to avoid recomputing them.',
+                    examples: [
+                        { name: 'Fibonacci (memoized)', complexity: 'O(N)' },
+                        { name: 'Knapsack Problem', complexity: 'O(N*W) where W is capacity' },
+                        { name: 'Longest Common Subsequence', complexity: 'O(N*M)' }
+                    ]
+                },
+                'Greedy Algorithms': {
+                    explanation: 'Greedy algorithms make the locally optimal choice at each step with the hope that this choice will lead to a globally optimal solution. They don\'t always guarantee the best solution.',
+                    examples: [
+                        { name: 'Dijkstra\'s Algorithm', complexity: 'O(E log V) or O(E+V log V)' },
+                        { name: 'Activity Selection Problem', complexity: 'O(N log N)' },
+                        { name: 'Huffman Coding', complexity: 'O(N log N)' }
+                    ]
+                },
+                'Backtracking': {
+                    explanation: 'Backtracking is a general algorithm for finding all (or some) solutions to computational problems, notably constraint satisfaction problems, that incrementally builds candidates to the solutions, and abandons a candidate ("backtracks") as soon as it determines that the candidate cannot possibly be completed to a valid solution.',
+                    examples: [
+                        { name: 'N-Queens Problem', complexity: 'O(N!)' },
+                        { name: 'Sudoku Solver', complexity: 'Exponential' },
+                        { name: 'Combinations/Permutations', complexity: 'O(N!)' }
+                    ]
+                }
+            };
+
+
+            const timeTabContainer = document.getElementById('time-tab-container');
+            const timeContentContainer = document.getElementById('time-content-container');
+            const spaceTabContainer = document.getElementById('space-tab-container');
+            const spaceContentContainer = document.getElementById('space-content-container');
             const practicalTableBody = document.getElementById('practical-table-body');
+            const exampleSelector = document.getElementById('example-selector');
+            const exampleCode = document.getElementById('example-code');
+            const exampleAnalysis = document.getElementById('example-analysis');
+            const caseSelector = document.getElementById('case-selector');
+            const bestCaseContent = document.getElementById('best-case-content');
+            const averageCaseContent = document.getElementById('average-case-content');
+            const worstCaseContent = document.getElementById('worst-case-content');
+            const dsComplexityTableBody = document.getElementById('ds-complexity-table-body');
+            const paradigmTabContainer = document.getElementById('paradigm-tab-container');
+            const paradigmContentContainer = document.getElementById('paradigm-content-container');
             
-            Object.keys(complexitiesData).forEach(key => {
+            // Populate Time Complexity Deep Dive
+            Object.keys(timeComplexitiesData).forEach(key => {
                 const button = document.createElement('button');
                 button.textContent = key;
                 button.dataset.key = key;
                 button.className = 'tab-btn px-4 py-2 text-sm md:text-base font-semibold text-slate-600 bg-slate-100 rounded-full hover:bg-amber-400 hover:text-white transition-colors duration-200';
-                tabContainer.appendChild(button);
+                timeTabContainer.appendChild(button);
             });
 
-            tabContainer.addEventListener('click', (e) => {
+            timeTabContainer.addEventListener('click', (e) => {
                 if (e.target.classList.contains('tab-btn')) {
                     const key = e.target.dataset.key;
-                    updateContent(key);
-
-                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
-                    e.target.classList.add('active-tab');
+                    updateContent(key, timeComplexitiesData, timeContentContainer, timeTabContainer);
                 }
             });
 
-            function updateContent(key) {
-                const data = complexitiesData[key];
-                contentContainer.innerHTML = `
+            // Populate Space Complexity Deep Dive
+            Object.keys(spaceComplexitiesData).forEach(key => {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.dataset.key = key;
+                button.className = 'tab-btn px-4 py-2 text-sm md:text-base font-semibold text-slate-600 bg-slate-100 rounded-full hover:bg-amber-400 hover:text-white transition-colors duration-200';
+                spaceTabContainer.appendChild(button);
+            });
+
+            spaceTabContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-btn')) {
+                    const key = e.target.dataset.key;
+                    updateContent(key, spaceComplexitiesData, spaceContentContainer, spaceTabContainer);
+                }
+            });
+
+            function updateContent(key, dataSet, contentElem, tabElem) {
+                const data = dataSet[key];
+                contentElem.innerHTML = `
                     <h3 class="text-2xl font-bold mb-4 text-amber-600">${data.title}</h3>
                     <div class="grid md:grid-cols-2 gap-8">
                         <div>
@@ -166,6 +453,8 @@
                         </div>
                     </div>
                 `;
+                tabElem.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+                tabElem.querySelector(`[data-key="${key}"]`).classList.add('active-tab');
             }
 
             function populatePracticalTable() {
@@ -180,6 +469,115 @@
                     `;
                 });
                 practicalTableBody.innerHTML = html;
+            }
+
+            function populateExampleSelector() {
+                for (const key in exampleSnippets) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = exampleSnippets[key].name;
+                    exampleSelector.appendChild(option);
+                }
+            }
+
+            function updateExampleDisplay() {
+                const selectedKey = exampleSelector.value;
+                const data = exampleSnippets[selectedKey];
+                if (data) {
+                    exampleCode.textContent = data.code;
+                    exampleAnalysis.innerHTML = `
+                        <h4 class="text-lg font-bold text-amber-600 mb-2">${data.complexity}</h4>
+                        <p class="text-slate-600">${data.explanation}</p>
+                    `;
+                } else {
+                    exampleCode.textContent = 'Select an example to see its code.';
+                    exampleAnalysis.innerHTML = '<p class="text-slate-500">Analysis will appear here.</p>';
+                }
+            }
+
+            exampleSelector.addEventListener('change', updateExampleDisplay);
+
+            function populateCaseSelector() {
+                for (const key in caseAnalysisData) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = caseAnalysisData[key].name;
+                    caseSelector.appendChild(option);
+                }
+            }
+
+            function updateCaseDisplay() {
+                const selectedKey = caseSelector.value;
+                const data = caseAnalysisData[selectedKey];
+                if (data) {
+                    bestCaseContent.innerHTML = `
+                        <h4 class="text-lg font-bold text-sky-600 mb-2">Best Case: ${data.best.complexity}</h4>
+                        <p class="text-slate-600">${data.best.explanation}</p>
+                    `;
+                    averageCaseContent.innerHTML = `
+                        <h4 class="text-lg font-bold text-emerald-600 mb-2">Average Case: ${data.average.complexity}</h4>
+                        <p class="text-slate-600">${data.average.explanation}</p>
+                    `;
+                    worstCaseContent.innerHTML = `
+                        <h4 class="text-lg font-bold text-rose-600 mb-2">Worst Case: ${data.worst.complexity}</h4>
+                        <p class="text-slate-600">${data.worst.explanation}</p>
+                    `;
+                } else {
+                    bestCaseContent.innerHTML = '<p class="text-slate-500">Select an algorithm to see its best case.</p>';
+                    averageCaseContent.innerHTML = '<p class="text-slate-500">Select an algorithm to see its average case.</p>';
+                    worstCaseContent.innerHTML = '<p class="text-slate-500">Select an algorithm to see its worst case.</p>';
+                }
+            }
+
+            caseSelector.addEventListener('change', updateCaseDisplay);
+
+            function populateDsComplexityTable() {
+                let html = '';
+                dsComplexityData.forEach(row => {
+                    html += `
+                        <tr class="border-b border-slate-100 last:border-b-0">
+                            <td class="p-4 font-semibold text-slate-700">${row.ds}</td>
+                            <td class="p-4">${row.access}</td>
+                            <td class="p-4">${row.search}</td>
+                            <td class="p-4">${row.insertion}</td>
+                            <td class="p-4">${row.deletion}</td>
+                            <td class="p-4">${row.space}</td>
+                        </tr>
+                    `;
+                });
+                dsComplexityTableBody.innerHTML = html;
+            }
+
+            // Populate Algorithm Paradigms
+            Object.keys(paradigmData).forEach(key => {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.dataset.key = key;
+                button.className = 'tab-btn px-4 py-2 text-sm md:text-base font-semibold text-slate-600 bg-slate-100 rounded-full hover:bg-amber-400 hover:text-white transition-colors duration-200';
+                paradigmTabContainer.appendChild(button);
+            });
+
+            paradigmTabContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-btn')) {
+                    const key = e.target.dataset.key;
+                    updateParadigmContent(key);
+                    paradigmTabContainer.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+                    e.target.classList.add('active-tab');
+                }
+            });
+
+            function updateParadigmContent(key) {
+                const data = paradigmData[key];
+                let examplesHtml = data.examples.map(ex => `<li class="mb-1"><span class="font-semibold">${ex.name}:</span> <span class="text-amber-600">${ex.complexity}</span></li>`).join('');
+
+                paradigmContentContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-4 text-amber-600">${key}</h3>
+                    <p class="text-slate-600 mb-4">${data.explanation}</p>
+                    <h4 class="text-xl font-semibold text-slate-700 mb-2">Typical Examples:</h4>
+                    <ul class="list-disc list-inside text-slate-600">
+                        ${examplesHtml}
+                    </ul>
+                `;
             }
 
 
@@ -198,7 +596,8 @@
                     },
                     {
                         label: 'O(log N)',
-                        data: nValues.map(n => n > 0 ? Math.log2(n) : 0),
+                        // Modified: Ensure value is at least 1 for logarithmic scale
+                        data: nValues.map(n => n > 1 ? Math.log2(n) : 1), 
                         borderColor: '#059669', // emerald-600
                         tension: 0.1,
                         borderWidth: 2,
@@ -214,7 +613,8 @@
                     },
                     {
                         label: 'O(N log N)',
-                        data: nValues.map(n => n > 0 ? n * Math.log2(n) : 0),
+                        // Modified: Ensure value is at least 1 for logarithmic scale
+                        data: nValues.map(n => n > 1 ? n * Math.log2(n) : 1), 
                         borderColor: '#6d28d9', // violet-700
                         tension: 0.1,
                         borderWidth: 2,
@@ -274,7 +674,17 @@
 
             renderChart();
             populatePracticalTable();
-            document.querySelector('.tab-btn').click();
+            populateExampleSelector();
+            updateExampleDisplay(); // Set initial display for the first example
+            populateCaseSelector();
+            updateCaseDisplay(); // Set initial display for the first case analysis
+            populateDsComplexityTable();
+            // Trigger initial display for Time Complexity Deep Dive
+            timeTabContainer.querySelector('.tab-btn').click();
+            // Trigger initial display for Space Complexity Deep Dive
+            spaceTabContainer.querySelector('.tab-btn').click();
+            // Trigger initial display for Algorithm Paradigms
+            paradigmTabContainer.querySelector('.tab-btn').click();
         });
     </script>
 </body>
