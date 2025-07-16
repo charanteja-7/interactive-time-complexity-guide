@@ -20,7 +20,7 @@ The application is designed to transform passive learning into an active, explor
 This is a single-page HTML application. To run it:
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/interactive-time-complexity-guide.git](https://github.com/YOUR_USERNAME/interactive-time-complexity-guide.git)
+    git clone [https://github.com/YOUR_USERNAME/interactive-time-complexity-guide.git](https://github.com/charanteja-7/interactive-time-complexity-guide.git)
     ```
 2.  Navigate into the project directory:
     ```bash
@@ -37,5 +37,3 @@ This is a single-page HTML application. To run it:
 ## Contributing
 Contributions are welcome! If you have suggestions for improvements, new features, or bug fixes, please feel free to open an issue or submit a pull request.
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
