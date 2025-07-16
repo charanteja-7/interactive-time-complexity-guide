@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Time Complexity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: A single-page dashboard structure with a clear, visual-first approach. The centerpiece is an interactive chart comparing complexity growth rates, immediately making the abstract concept tangible. This is followed by a "Deep Dive" section where users can select a specific complexity to explore its details (explanation, code example), promoting focused, active learning. A final section presents the practical application table. This structure was chosen over a linear document to turn passive reading into an active, exploratory experience, which is more effective for learning technical concepts. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Hierarchy of complexities (O(1) to O(N^2)). Goal: Compare growth rates visually. Viz/Method: Interactive Line Chart. Interaction: Hovering over lines reveals details. Justification: A chart conveys the magnitude of difference between complexities far better than text. Library: Chart.js.
+        2. Report Info: Detailed explanations of each complexity. Goal: Organize information for focused learning. Viz/Method: Clickable tabs/buttons. Interaction: Clicking a complexity button dynamically displays its specific explanation and code snippet. Justification: Avoids a wall of text, allowing users to learn one concept at a time. Library/Method: Vanilla JS DOM manipulation.
+        3. Report Info: Practical implications table. Goal: Provide actionable guidance. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the ideal format for this data. Library/Method: HTML + Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .active-tab { background-color: #f59e0b !important; color: #ffffff !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-amber-600 mb-2">An Interactive Guide to Time Complexity</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">Visually explore how the efficiency of algorithms changes with input size. This guide translates abstract Big O concepts into tangible, interactive visualizations.</p>
+        </header>
+
+        <main>
+            <section id="growth-comparison" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-2">Visualizing Growth Rates</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Hover over the lines to see how different complexities scale. Notice how quickly quadratic (`O(N²)`) and exponential (`O(2ⁿ)`) complexities become inefficient as the input size (`N`) grows.</p>
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                    <div class="chart-container">
+                        <canvas id="complexityChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="deep-dive" class="mb-16">
+                <h2 class="text-3xl font-bold text-center mb-8">Complexity Deep Dive</h2>
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="tab-container">
+                </div>
+
+                <div id="content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                </div>
+            </section>
+
+            <section id="practical-guide">
+                <h2 class="text-3xl font-bold text-center mb-8">Practical Guide: Is My Algorithm Fast Enough?</h2>
+                 <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto">In a typical coding challenge with a 1-second time limit, a computer can perform roughly 10⁸ operations. Use this table to estimate which time complexity is feasible for a given input size `N`.</p>
+                <div class="overflow-x-auto bg-white rounded-xl shadow-lg p-4">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="border-b-2 border-slate-200">
+                            <tr>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Input Size (N)</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Acceptable Complexity</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase hidden md:table-cell">Example Algorithms</th>
+                            </tr>
+                        </thead>
+                        <tbody id="practical-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-16 py-6 border-t border-slate-200">
+            <p class="text-slate-500">An interactive resource based on the "Understanding Time Complexity" report.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const complexitiesData = {
+                'O(1)': {
+                    title: 'O(1) - Constant Time',
+                    explanation: 'The algorithm takes the same amount of time to execute, regardless of the input size. This is the most efficient complexity.',
+                    example: 'Accessing an element in an array by its index.',
+                    code: `int getItem(int[] array, int index) {\n    return array[index]; // Always one operation\n}`
+                },
+                'O(log N)': {
+                    title: 'O(log N) - Logarithmic Time',
+                    explanation: 'The runtime grows very slowly as the input size increases. These algorithms typically work by repeatedly halving the size of the problem.',
+                    example: 'Binary search in a sorted array.',
+                    code: `int binarySearch(int[] arr, int target) {\n    int low = 0, high = arr.length - 1;\n    while (low <= high) {\n        int mid = low + (high - low) / 2;\n        if (arr[mid] == target) return mid;\n        if (arr[mid] < target) low = mid + 1;\n        else high = mid - 1;\n    }\n    return -1;\n}`
+                },
+                'O(N)': {
+                    title: 'O(N) - Linear Time',
+                    explanation: 'The runtime grows linearly with the input size. If the input size doubles, the runtime roughly doubles.',
+                    example: 'Finding the maximum element in an unsorted array.',
+                    code: `int findMax(int[] array) {\n    int max = array[0];\n    for (int i = 1; i < array.length; i++) {\n        if (array[i] > max) {\n            max = array[i];\n        }\n    }\n    return max;\n}`
+                },
+                'O(N log N)': {
+                    title: 'O(N log N) - Log-Linear Time',
+                    explanation: 'A very common and efficient complexity for algorithms that involve sorting. It scales well for large datasets.',
+                    example: 'Efficient sorting algorithms like Merge Sort or Quick Sort.',
+                    code: `void mergeSort(int[] array) {\n    // (Simplified representation)\n    if (array.length <= 1) return;\n    int mid = array.length / 2;\n    // Recursively sort halves (log N levels)\n    // Merge sorted halves (N operations per level)\n}`
+                },
+                'O(N²)': {
+                    title: 'O(N²) - Quadratic Time',
+                    explanation: 'The runtime grows proportionally to the square of the input size. This is common in algorithms that involve nested iterations over the input.',
+                    example: 'Simple sorting algorithms like Bubble Sort or checking all pairs in an array.',
+                    code: `void checkPairs(int[] array) {\n    for (int i = 0; i < array.length; i++) {\n        for (int j = 0; j < array.length; j++) {\n            // Process pair (array[i], array[j])\n        }\n    }\n}`
+                },
+                'O(2ⁿ)': {
+                    title: 'O(2ⁿ) - Exponential Time',
+                    explanation: 'The runtime doubles with each addition to the input size. These algorithms are extremely slow and only feasible for very small values of N.',
+                    example: 'Recursive calculation of Fibonacci numbers without memoization.',
+                    code: `int fibonacci(int n) {\n    if (n <= 1) return n;\n    // Two recursive calls for each step\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}`
+                }
+            };
+
+            const practicalData = [
+                { size: 'N <= 12', complexity: 'O(N!)', example: 'Permutations, brute-force TSP' },
+                { size: 'N <= 25', complexity: 'O(2ⁿ)', example: 'Brute-force subsets, recursive DP' },
+                { size: 'N <= 500', complexity: 'O(N³)', example: 'Floyd-Warshall, matrix operations' },
+                { size: 'N <= 5000', complexity: 'O(N²)', example: 'Simple sorting, basic nested loops' },
+                { size: 'N <= 10⁶', complexity: 'O(N log N)', example: 'Efficient sorting, divide and conquer' },
+                { size: 'N <= 10⁸', complexity: 'O(N)', example: 'Single pass algorithms, linear scan' },
+                { size: 'Any', complexity: 'O(log N)', example: 'Binary search on sorted data' }
+            ];
+
+            const tabContainer = document.getElementById('tab-container');
+            const contentContainer = document.getElementById('content-container');
+            const practicalTableBody = document.getElementById('practical-table-body');
+            
+            Object.keys(complexitiesData).forEach(key => {
+                const button = document.createElement('button');
+                button.textContent = key;
+                button.dataset.key = key;
+                button.className = 'tab-btn px-4 py-2 text-sm md:text-base font-semibold text-slate-600 bg-slate-100 rounded-full hover:bg-amber-400 hover:text-white transition-colors duration-200';
+                tabContainer.appendChild(button);
+            });
+
+            tabContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-btn')) {
+                    const key = e.target.dataset.key;
+                    updateContent(key);
+
+                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
+                    e.target.classList.add('active-tab');
+                }
+            });
+
+            function updateContent(key) {
+                const data = complexitiesData[key];
+                contentContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-4 text-amber-600">${data.title}</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="text-slate-600 mb-4">${data.explanation}</p>
+                            <p class="text-sm text-slate-500"><strong class="font-semibold text-slate-600">Common Example:</strong> ${data.example}</p>
+                        </div>
+                        <div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                            <pre><code>${data.code}</code></pre>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function populatePracticalTable() {
+                let html = '';
+                practicalData.forEach(row => {
+                    html += `
+                        <tr class="border-b border-slate-100 last:border-b-0">
+                            <td class="p-4 font-mono font-medium">${row.size}</td>
+                            <td class="p-4"><span class="px-2 py-1 font-semibold text-amber-800 bg-amber-100 rounded-md text-sm">${row.complexity}</span></td>
+                            <td class="p-4 text-slate-500 hidden md:table-cell">${row.example}</td>
+                        </tr>
+                    `;
+                });
+                practicalTableBody.innerHTML = html;
+            }
+
+
+            function renderChart() {
+                const ctx = document.getElementById('complexityChart').getContext('2d');
+                const nValues = Array.from({ length: 21 }, (_, i) => i);
+
+                const datasets = [
+                    {
+                        label: 'O(1)',
+                        data: nValues.map(() => 1),
+                        borderColor: '#0284c7', // sky-600
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'O(log N)',
+                        data: nValues.map(n => n > 0 ? Math.log2(n) : 0),
+                        borderColor: '#059669', // emerald-600
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'O(N)',
+                        data: nValues.map(n => n),
+                        borderColor: '#f59e0b', // amber-500
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'O(N log N)',
+                        data: nValues.map(n => n > 0 ? n * Math.log2(n) : 0),
+                        borderColor: '#6d28d9', // violet-700
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'O(N²)',
+                        data: nValues.map(n => n * n),
+                        borderColor: '#be123c', // rose-700
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    },
+                     {
+                        label: 'O(2ⁿ)',
+                        data: nValues.slice(0, 10).map(n => Math.pow(2, n)),
+                        borderColor: '#1f2937', // gray-800
+                        tension: 0.1,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        borderDash: [5, 5]
+                    }
+                ];
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: nValues,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: { display: false },
+                            legend: { position: 'bottom', labels: { usePointStyle: true } }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Input Size (N)', font: { weight: 'bold' } }
+                            },
+                            y: {
+                                title: { display: true, text: 'Number of Operations', font: { weight: 'bold' } },
+                                type: 'logarithmic',
+                                min: 1,
+                                max: 10000,
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return Number(value.toString()).toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            renderChart();
+            populatePracticalTable();
+            document.querySelector('.tab-btn').click();
+        });
+    </script>
+</body>
+</html>
