@@ -483,24 +483,26 @@ void add(element) {
                     ]
                 },
                 {
-                    complexity: 'O(N³)',
-                    description: 'Cubic time complexity. Very slow for even moderately large N.',
-                    data: [
-                        { N: '10', operations: '1,000', time: '10.00 µs' },
-                        { N: '50', operations: '1.25×10⁵', time: '1.25 ms' },
-                        { N: '100', operations: '1.00×10⁶', time: '10.00 ms' },
-                        { N: '→1,000', operations: '1.00×10⁹', time: '10.00 s' }
+                    "complexity": "O(N³)",
+                    "description": "Cubic time complexity. Very slow for even moderately large N.",
+                    "data": [
+                      { "N": "10", "operations": "1,000", "time": "10.00 µs" },
+                      { "N": "50", "operations": "1.25×10⁵", "time": "1.25 ms" },
+                      { "N": "100", "operations": "1.00×10⁶", "time": "10.00 ms" },
+                      { "N": "→500", "operations": "1.25×10⁸", "time": "1.25 s" },
+                      { "N": "1,000", "operations": "1.00×10⁹", "time": "10.00 s" }
                     ]
-                },
-                {
-                    complexity: 'O(2ᴺ)',
-                    description: 'Exponential time complexity. Impractical for N > ~25.',
-                    data: [
-                        { N: '10', operations: '1.02×10³', time: '10.24 µs' },
-                        { N: '→50', operations: '1.13×10¹⁵', time: '130.31 days' },
-                        { N: '100', operations: '1.27×10³⁰', time: '4.02×10¹⁴ years' }
+                  },
+                  {
+                    "complexity": "O(2ᴺ)",
+                    "description": "Exponential time complexity. Impractical for N > ~25.",
+                    "data": [
+                      { "N": "10", "operations": "1.02×10³", "time": "10.24 µs" },
+                      { "N": "→25", "operations": "3.36×10⁷", "time": "0.34 s" },
+                      { "N": "50", "operations": "1.13×10¹⁵", "time": "130.31 days" },
+                      { "N": "100", "operations": "1.27×10³⁰", "time": "4.02×10¹⁴ years" }
                     ]
-                },
+                  },
                 {
                     complexity: 'O(N!)',
                     description: 'Factorial time complexity. Impractical for N > ~12.',
