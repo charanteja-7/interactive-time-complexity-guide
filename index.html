@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,68 +10,98 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chosen Palette: Slate & Amber -->
-    <!-- Application Structure Plan: A single-page dashboard structure with a clear, visual-first approach. The centerpiece is an interactive chart comparing time complexity growth rates. This is followed by a "Deep Dive" section for time complexities, and new dedicated sections for "Space Complexity," "Amortized Analysis," "Best/Worst/Average Cases," "Data Structure Complexities," and "Algorithm Design Paradigms." Each section uses tabs or dropdowns for focused exploration. A final section presents the practical application table. This modular, tabbed structure was chosen to organize a large amount of information into digestible, interactive chunks, allowing users to navigate and learn at their own pace, enhancing understanding over a linear document. -->
+    <!-- Application Structure Plan: A single-page dashboard structure with a clear, visual-first approach. The centerpiece is an interactive chart comparing time complexity growth rates. This is followed by a "Deep Dive" section for time complexities, and new dedicated sections for "Space Complexity," "Amortized Analysis," "Best/Worst/Average Cases," "Data Structure Complexities," and "Algorithm Design Paradigms." Each section uses tabs or dropdowns for focused exploration. A new "Detailed Performance Tables" section provides granular data on operations and time taken for various complexities. This modular, tabbed structure was chosen to organize a large amount of information into digestible, interactive chunks, allowing users to navigate and learn at their own pace, enhancing understanding over a linear document. -->
     <!-- Visualization & Content Choices: 
         1. Report Info: Hierarchy of time complexities (O(1) to O(2^N)). Goal: Compare growth rates visually. Viz/Method: Interactive Line Chart. Interaction: Hovering over lines reveals details. Justification: A chart conveys the magnitude of difference between complexities far better than text. Library: Chart.js.
         2. Report Info: Detailed explanations of each time complexity. Goal: Organize information for focused learning. Viz/Method: Clickable tabs/buttons. Interaction: Clicking a complexity button dynamically displays its specific explanation and code snippet. Justification: Avoids a wall of text, allowing users to learn one concept at a time. Library/Method: Vanilla JS DOM manipulation.
         3. Report Info: Detailed explanations of each space complexity. Goal: Organize information for focused learning. Viz/Method: Clickable tabs/buttons. Interaction: Clicking a complexity button dynamically displays its specific explanation and code snippet. Justification: Similar to time complexity, this provides structured learning for space. Library/Method: Vanilla JS DOM manipulation.
         4. Report Info: Amortized analysis concept. Goal: Explain a nuanced complexity concept. Viz/Method: Textual explanation with a code example. Interaction: N/A, focus on clarity. Justification: Best conveyed through clear text and a simple example. Library/Method: HTML + Tailwind CSS.
         5. Report Info: Best, Worst, Average cases. Goal: Illustrate variability in algorithm performance. Viz/Method: Dropdown for algorithm selection, text/code display for cases. Interaction: Dropdown selection updates displayed case details. Justification: Allows users to see how context changes complexity. Library/Method: Vanilla JS DOM manipulation.
-        6. Report Info: Data structure complexities. Goal: Provide a quick reference for common data structures. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the most efficient way to present this comparative data. Library/Method: HTML + Tailwind CSS.
+        6. Report Info: Data structure complexities. Goal: Provide a quick reference for common data structures. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the most efficient way to present this comparative data. Library: HTML + Tailwind CSS.
         7. Report Info: Algorithm design paradigms. Goal: Connect complexity to design strategies. Viz/Method: Clickable tabs/buttons for each paradigm, text/example display. Interaction: Clicking a paradigm button displays its definition and examples. Justification: Organizes algorithms by approach, aiding conceptual understanding. Library/Method: Vanilla JS DOM manipulation.
-        8. Report Info: Practical implications table. Goal: Provide actionable guidance. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the ideal format for this data. Library/Method: HTML + Tailwind CSS.
+        8. Report Info: Practical implications table. Goal: Provide actionable guidance. Viz/Method: Styled HTML table. Interaction: N/A, focus on clarity. Justification: A table is the ideal format for this data. Library: HTML + Tailwind CSS.
+        9. Report Info: Detailed complexity tables (N, Operations, Time Taken). Goal: Provide precise quantitative understanding of performance for various N. Viz/Method: Multiple styled HTML tables. Interaction: N/A, focus on granular data presentation. Justification: Supplements the chart by showing exact numbers, reinforcing the growth concept. Library/Method: HTML + Tailwind CSS.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
         .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
         @media (min-width: 768px) { .chart-container { height: 400px; } }
         .active-tab { background-color: #f59e0b !important; color: #ffffff !important; }
+
+        /* Dark Mode Styles */
+        html.dark {
+            --tw-bg-opacity: 1;
+            background-color: rgb(15 23 42 / var(--tw-bg-opacity)); /* slate-900 */
+            color: rgb(203 213 225 / var(--tw-text-opacity)); /* slate-300 */
+        }
+        html.dark .text-slate-800 { color: rgb(203 213 225 / var(--tw-text-opacity)); } /* slate-300 */
+        html.dark .text-slate-600 { color: rgb(148 163 184 / var(--tw-text-opacity)); } /* slate-400 */
+        html.dark .text-slate-500 { color: rgb(100 116 139 / var(--tw-text-opacity)); } /* slate-500 */
+        html.dark .bg-white { background-color: rgb(30 41 59 / var(--tw-bg-opacity)); } /* slate-800 */
+        html.dark .bg-slate-100 { background-color: rgb(51 65 85 / var(--tw-bg-opacity)); } /* slate-700 */
+        html.dark .bg-slate-800 { background-color: rgb(15 23 42 / var(--tw-bg-opacity)); } /* slate-900 for code blocks */
+        html.dark .text-white { color: rgb(248 250 252 / var(--tw-text-opacity)); } /* slate-50 */
+        html.dark .border-slate-200 { border-color: rgb(51 65 85 / var(--tw-border-opacity)); } /* slate-700 */
+        html.dark .border-slate-300 { border-color: rgb(71 85 105 / var(--tw-border-opacity)); } /* slate-600 */
+        html.dark .text-amber-600 { color: #fbbf24; } /* amber-400 */
+        html.dark .text-amber-800 { color: #fcd34d; } /* amber-300 */
+        html.dark .bg-amber-100 { background-color: rgb(251 191 36 / 0.2); } /* amber-400 with opacity */
+        html.dark .hover\:bg-amber-400:hover { background-color: #f59e0b; } /* amber-500 */
+        html.dark .active-tab { background-color: #d97706 !important; } /* amber-700 */
+        html.dark .bg-amber-500 { background-color: #d97706; } /* amber-700 */
+        html.dark .hover\:bg-amber-600:hover { background-color: #b45309; } /* amber-800 */
+        html.dark .text-sky-600 { color: #38bdf8; } /* sky-400 */
+        html.dark .text-emerald-600 { color: #34d399; } /* emerald-400 */
+        html.dark .text-rose-600 { color: #fb7185; } /* rose-400 */
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-50 text-slate-800 transition-colors duration-300">
 
     <div class="container mx-auto p-4 md:p-8">
         
-        <header class="text-center mb-12">
+        <header class="text-center mb-12 relative">
             <h1 class="text-4xl md:text-5xl font-bold text-amber-600 mb-2">An Interactive Guide to Time Complexity</h1>
             <p class="text-lg text-slate-600 max-w-3xl mx-auto">Visually explore how the efficiency of algorithms changes with input size. This guide translates abstract Big O concepts into tangible, interactive visualizations.</p>
+            <button id="theme-toggle" class="absolute top-0 right-0 p-3 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors duration-300">
+                ☀️
+            </button>
         </header>
 
         <main>
-            <section id="growth-comparison" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-2">Visualizing Growth Rates</h2>
+            <section id="growth-comparison" class="mb-16 py-12 px-4 rounded-xl bg-white dark:bg-slate-800 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-2">📈 Visualizing Growth Rates</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Hover over the lines to see how different complexities scale. Notice how quickly quadratic (`O(N²)`) and exponential (`O(2ⁿ)`) complexities become inefficient as the input size (`N`) grows.</p>
-                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <div class="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-xl shadow-lg transition-colors duration-300">
                     <div class="chart-container">
                         <canvas id="complexityChart"></canvas>
                     </div>
                 </div>
             </section>
 
-            <section id="time-complexity-deep-dive" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Time Complexity Deep Dive</h2>
+            <section id="time-complexity-deep-dive" class="mb-16 py-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">⏱️ Time Complexity Deep Dive</h2>
                 <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="time-tab-container">
                 </div>
 
-                <div id="time-content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                <div id="time-content-container" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
                 </div>
             </section>
 
-            <section id="space-complexity-deep-dive" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Memory: Space Complexity Deep Dive</h2>
+            <section id="space-complexity-deep-dive" class="mb-16 py-12 px-4 rounded-xl bg-white dark:bg-slate-800 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">💾 Memory: Space Complexity Deep Dive</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Beyond time, algorithms also consume memory. Understand how space usage scales with input size.</p>
                 <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="space-tab-container">
                 </div>
 
-                <div id="space-content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                <div id="space-content-container" class="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
                 </div>
             </section>
 
-            <section id="amortized-analysis" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Understanding Amortized Analysis</h2>
+            <section id="amortized-analysis" class="mb-16 py-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">⚖️ Understanding Amortized Analysis</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Some operations aren't consistently fast, but their average cost over a sequence of operations is efficient. This is amortized analysis.</p>
-                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-lg transition-colors duration-300">
                     <h3 class="text-2xl font-bold mb-4 text-amber-600">Dynamic Array (ArrayList) `add` Operation</h3>
                     <div class="grid md:grid-cols-2 gap-8">
                         <div>
@@ -100,37 +130,37 @@ void add(element) {
                 </div>
             </section>
 
-            <section id="case-analysis" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Best, Worst, and Average Case Analysis</h2>
+            <section id="case-analysis" class="mb-16 py-12 px-4 rounded-xl bg-white dark:bg-slate-800 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">📊 Best, Worst, and Average Case Analysis</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">An algorithm's performance can vary depending on the input. Explore how different scenarios affect complexity.</p>
-                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <div class="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl shadow-lg transition-colors duration-300">
                     <div class="mb-4">
                         <label for="case-selector" class="block text-slate-700 text-lg font-semibold mb-2">Choose an algorithm:</label>
-                        <select id="case-selector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-slate-700">
+                        <select id="case-selector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-slate-700 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600">
                         </select>
                     </div>
                     
                     <div id="case-display" class="grid md:grid-cols-1 gap-8">
-                        <div id="best-case-content" class="p-4 bg-slate-100 rounded-lg"></div>
-                        <div id="average-case-content" class="p-4 bg-slate-100 rounded-lg"></div>
-                        <div id="worst-case-content" class="p-4 bg-slate-100 rounded-lg"></div>
+                        <div id="best-case-content" class="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg transition-colors duration-300"></div>
+                        <div id="average-case-content" class="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg transition-colors duration-300"></div>
+                        <div id="worst-case-content" class="p-4 bg-slate-100 dark:bg-slate-700 rounded-lg transition-colors duration-300"></div>
                     </div>
                 </div>
             </section>
 
-            <section id="data-structure-complexity" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Data Structure Operation Complexities</h2>
+            <section id="data-structure-complexity" class="mb-16 py-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">🏗️ Data Structure Operation Complexities</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto">Understanding the efficiency of fundamental data structure operations is key to designing performant algorithms.</p>
-                <div class="overflow-x-auto bg-white rounded-xl shadow-lg p-4">
+                <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 transition-colors duration-300">
                     <table class="w-full text-left border-collapse">
-                        <thead class="border-b-2 border-slate-200">
+                        <thead class="border-b-2 border-slate-200 dark:border-slate-600">
                             <tr>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Data Structure</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Access</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Search</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Insertion</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Deletion</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Space</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Data Structure</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Access</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Search</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Insertion</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Deletion</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Space</th>
                             </tr>
                         </thead>
                         <tbody id="ds-complexity-table-body">
@@ -139,26 +169,26 @@ void add(element) {
                 </div>
             </section>
 
-            <section id="algorithm-paradigms" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Algorithm Design Paradigms & Complexities</h2>
+            <section id="algorithm-paradigms" class="mb-16 py-12 px-4 rounded-xl bg-white dark:bg-slate-800 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">💡 Algorithm Design Paradigms & Complexities</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Different problem-solving strategies lead to distinct performance characteristics.</p>
                 <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="paradigm-tab-container">
                 </div>
 
-                <div id="paradigm-content-container" class="bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
+                <div id="paradigm-content-container" class="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl shadow-lg min-h-[300px] transition-all duration-300">
                 </div>
             </section>
 
-            <section id="practical-guide" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">Practical Guide: Is My Algorithm Fast Enough?</h2>
+            <section id="practical-guide" class="mb-16 py-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">🚀 Practical Guide: Is My Algorithm Fast Enough?</h2>
                  <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto">In a typical coding challenge with a 1-second time limit, a computer can perform roughly 10⁸ operations. Use this table to estimate which time complexity is feasible for a given input size `N`.</p>
-                <div class="overflow-x-auto bg-white rounded-xl shadow-lg p-4">
+                <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-xl shadow-lg p-4 transition-colors duration-300">
                     <table class="w-full text-left border-collapse">
-                        <thead class="border-b-2 border-slate-200">
+                        <thead class="border-b-2 border-slate-200 dark:border-slate-600">
                             <tr>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Input Size (N)</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase">Acceptable Complexity</th>
-                                <th class="p-4 text-sm font-semibold text-slate-600 uppercase hidden md:table-cell">Example Algorithms</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Input Size (N)</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase">Acceptable Complexity</th>
+                                <th class="p-4 text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase hidden md:table-cell">Example Algorithms</th>
                             </tr>
                         </thead>
                         <tbody id="practical-table-body">
@@ -167,13 +197,13 @@ void add(element) {
                 </div>
             </section>
 
-            <section id="explore-snippets" class="mb-16">
-                <h2 class="text-3xl font-bold text-center mb-8">💡 Explore Example Snippets 💡</h2>
+            <section id="explore-snippets" class="mb-16 py-12 px-4 rounded-xl bg-white dark:bg-slate-800 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">📚 Explore Example Snippets 📚</h2>
                 <p class="text-center text-slate-500 mb-8 max-w-2xl mx-auto">Select a common algorithm from the dropdown to view its code and understand its time complexity.</p>
-                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <div class="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-xl shadow-lg transition-colors duration-300">
                     <div class="mb-4">
-                        <label for="example-selector" class="block text-slate-700 text-lg font-semibold mb-2">Choose an example:</label>
-                        <select id="example-selector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-slate-700">
+                        <label for="example-selector" class="block text-slate-700 dark:text-slate-300 text-lg font-semibold mb-2">Choose an example:</label>
+                        <select id="example-selector" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-amber-500 focus:border-amber-500 text-slate-700 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600">
                         </select>
                     </div>
                     
@@ -189,15 +219,25 @@ void add(element) {
                     </div>
                 </div>
             </section>
+
+            <section id="detailed-complexity-tables" class="mb-16 py-12 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 shadow-lg transition-colors duration-300">
+                <h2 class="text-3xl font-bold text-center mb-8">📈 Detailed Performance Tables</h2>
+                <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto">Dive deeper into the numbers: see the exact operations and estimated time taken for various input sizes across different complexities. (Assumes 100 million operations per second).</p>
+                <div id="detailed-tables-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Tables will be dynamically generated here -->
+                </div>
+            </section>
         </main>
         
-        <footer class="text-center mt-16 py-6 border-t border-slate-200">
-            <p class="text-slate-500">An interactive resource based on the "Understanding Time Complexity" report.</p>
+        <footer class="text-center mt-16 py-6 border-t border-slate-200 dark:border-slate-600 transition-colors duration-300">
+            <p class="text-slate-500 dark:text-slate-400">An interactive resource based on the "Understanding Time Complexity" report.</p>
         </footer>
 
     </div>
 
     <script>
+        let complexityChartInstance = null; // Global variable to hold the chart instance
+
         document.addEventListener('DOMContentLoaded', () => {
 
             const timeComplexitiesData = {
@@ -390,6 +430,88 @@ void add(element) {
                 }
             };
 
+            const detailedComplexityTablesData = [
+                {
+                    complexity: 'O(log N)',
+                    description: 'Logarithmic time complexity. The time taken grows very slowly as N increases.',
+                    data: [
+                        { N: '10', operations: '3.32', time: '33.22 ns' },
+                        { N: '50', operations: '5.64', time: '56.44 ns' },
+                        { N: '100', operations: '6.64', time: '66.44 ns' },
+                        { N: '1,000', operations: '9.97', time: '99.66 ns' },
+                        { N: '10,000', operations: '13.3', time: '132.88 ns' },
+                        { N: '100,000', operations: '16.6', time: '166.10 ns' },
+                        { N: '→1,000,000', operations: '19.9', time: '199.32 ns' }
+                    ]
+                },
+                {
+                    complexity: 'O(N)',
+                    description: 'Linear time complexity. The time taken grows directly proportional to N.',
+                    data: [
+                        { N: '10', operations: '10', time: '100.00 ns' },
+                        { N: '50', operations: '50', time: '500.00 ns' },
+                        { N: '100', operations: '100', time: '1.00 µs' },
+                        { N: '1,000', operations: '1,000', time: '10.00 µs' },
+                        { N: '10,000', operations: '10,000', time: '100.00 µs' },
+                        { N: '100,000', operations: '1.00×10⁵', time: '1.00 ms' },
+                        { N: '→1,000,000', operations: '1.00×10⁶', time: '10.00 ms' }
+                    ]
+                },
+                {
+                    complexity: 'O(N log N)',
+                    description: 'Log-linear time complexity. Common for efficient sorting algorithms.',
+                    data: [
+                        { N: '10', operations: '33.2', time: '332.19 ns' },
+                        { N: '50', operations: '282', time: '2.82 µs' },
+                        { N: '100', operations: '664', time: '6.64 µs' },
+                        { N: '1,000', operations: '9,970', time: '99.66 µs' },
+                        { N: '10,000', operations: '1.33×10⁵', time: '1.33 ms' },
+                        { N: '100,000', operations: '1.66×10⁶', time: '16.61 ms' },
+                        { N: '→1,000,000', operations: '1.99×10⁷', time: '199.32 ms' }
+                    ]
+                },
+                {
+                    complexity: 'O(N²)',
+                    description: 'Quadratic time complexity. Performance degrades quickly with increasing N.',
+                    data: [
+                        { N: '10', operations: '100', time: '1.00 µs' },
+                        { N: '50', operations: '2,500', time: '25.00 µs' },
+                        { N: '100', operations: '10,000', time: '100.00 µs' },
+                        { N: '1,000', operations: '1.00×10⁶', time: '10.00 ms' },
+                        { N: '→10,000', operations: '1.00×10⁸', time: '1.00 s' },
+                        { N: '100,000', operations: '1.00×10¹⁰', time: '1.67 minutes' }
+                    ]
+                },
+                {
+                    complexity: 'O(N³)',
+                    description: 'Cubic time complexity. Very slow for even moderately large N.',
+                    data: [
+                        { N: '10', operations: '1,000', time: '10.00 µs' },
+                        { N: '50', operations: '1.25×10⁵', time: '1.25 ms' },
+                        { N: '100', operations: '1.00×10⁶', time: '10.00 ms' },
+                        { N: '→1,000', operations: '1.00×10⁹', time: '10.00 s' }
+                    ]
+                },
+                {
+                    complexity: 'O(2ᴺ)',
+                    description: 'Exponential time complexity. Impractical for N > ~25.',
+                    data: [
+                        { N: '10', operations: '1.02×10³', time: '10.24 µs' },
+                        { N: '→50', operations: '1.13×10¹⁵', time: '130.31 days' },
+                        { N: '100', operations: '1.27×10³⁰', time: '4.02×10¹⁴ years' }
+                    ]
+                },
+                {
+                    complexity: 'O(N!)',
+                    description: 'Factorial time complexity. Impractical for N > ~12.',
+                    data: [
+                        { N: '10', operations: '3.63×10⁶', time: '36.29 ms' },
+                        { N: '→50', operations: '3.04×10⁶⁴', time: '9.64×10⁴⁷ years' },
+                        { N: '100', operations: '9.33×10¹⁵⁷', time: '2.96×10¹⁴⁰ years' }
+                    ]
+                }
+            ];
+
 
             const timeTabContainer = document.getElementById('time-tab-container');
             const timeContentContainer = document.getElementById('time-content-container');
@@ -406,6 +528,8 @@ void add(element) {
             const dsComplexityTableBody = document.getElementById('ds-complexity-table-body');
             const paradigmTabContainer = document.getElementById('paradigm-tab-container');
             const paradigmContentContainer = document.getElementById('paradigm-content-container');
+            const themeToggle = document.getElementById('theme-toggle');
+            const detailedTablesContainer = document.getElementById('detailed-tables-container');
             
             // Populate Time Complexity Deep Dive
             Object.keys(timeComplexitiesData).forEach(key => {
@@ -461,7 +585,7 @@ void add(element) {
                 let html = '';
                 practicalData.forEach(row => {
                     html += `
-                        <tr class="border-b border-slate-100 last:border-b-0">
+                        <tr class="border-b border-slate-100 dark:border-slate-700 last:border-b-0">
                             <td class="p-4 font-mono font-medium">${row.size}</td>
                             <td class="p-4"><span class="px-2 py-1 font-semibold text-amber-800 bg-amber-100 rounded-md text-sm">${row.complexity}</span></td>
                             <td class="p-4 text-slate-500 hidden md:table-cell">${row.example}</td>
@@ -535,8 +659,8 @@ void add(element) {
                 let html = '';
                 dsComplexityData.forEach(row => {
                     html += `
-                        <tr class="border-b border-slate-100 last:border-b-0">
-                            <td class="p-4 font-semibold text-slate-700">${row.ds}</td>
+                        <tr class="border-b border-slate-100 dark:border-slate-700 last:border-b-0">
+                            <td class="p-4 font-semibold text-slate-700 dark:text-slate-300">${row.ds}</td>
                             <td class="p-4">${row.access}</td>
                             <td class="p-4">${row.search}</td>
                             <td class="p-4">${row.insertion}</td>
@@ -580,10 +704,53 @@ void add(element) {
                 `;
             }
 
+            function populateDetailedComplexityTables() {
+                let html = '';
+                detailedComplexityTablesData.forEach(comp => {
+                    html += `
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg transition-colors duration-300">
+                            <h3 class="text-xl font-bold text-amber-600 mb-4">${comp.complexity}</h3>
+                            <p class="text-slate-600 dark:text-slate-400 mb-4 text-sm">${comp.description}</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead class="border-b-2 border-slate-200 dark:border-slate-600">
+                                        <tr>
+                                            <th class="p-2 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">N</th>
+                                            <th class="p-2 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Operations</th>
+                                            <th class="p-2 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Time Taken</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
+                    comp.data.forEach(row => {
+                        html += `
+                                        <tr class="border-b border-slate-100 dark:border-slate-700 last:border-b-0">
+                                            <td class="p-2 font-mono text-xs font-medium">${row.N}</td>
+                                            <td class="p-2 text-xs">${row.operations}</td>
+                                            <td class="p-2 text-xs">${row.time}</td>
+                                        </tr>`;
+                    });
+                    html += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>`;
+                });
+                detailedTablesContainer.innerHTML = html;
+            }
+
+
+            function getChartColors() {
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                return {
+                    gridColor: isDarkMode ? 'rgba(100, 116, 139, 0.2)' : 'rgba(226, 232, 240, 0.5)', // slate-500 / slate-200
+                    textColor: isDarkMode ? '#cbd5e1' : '#475569' // slate-300 / slate-600
+                };
+            }
 
             function renderChart() {
                 const ctx = document.getElementById('complexityChart').getContext('2d');
                 const nValues = Array.from({ length: 21 }, (_, i) => i);
+                const { gridColor, textColor } = getChartColors();
 
                 const datasets = [
                     {
@@ -596,7 +763,6 @@ void add(element) {
                     },
                     {
                         label: 'O(log N)',
-                        // Modified: Ensure value is at least 1 for logarithmic scale
                         data: nValues.map(n => n > 1 ? Math.log2(n) : 1), 
                         borderColor: '#059669', // emerald-600
                         tension: 0.1,
@@ -613,7 +779,6 @@ void add(element) {
                     },
                     {
                         label: 'O(N log N)',
-                        // Modified: Ensure value is at least 1 for logarithmic scale
                         data: nValues.map(n => n > 1 ? n * Math.log2(n) : 1), 
                         borderColor: '#6d28d9', // violet-700
                         tension: 0.1,
@@ -639,7 +804,11 @@ void add(element) {
                     }
                 ];
 
-                new Chart(ctx, {
+                if (complexityChartInstance) {
+                    complexityChartInstance.destroy(); // Destroy existing chart instance
+                }
+
+                complexityChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: nValues,
@@ -650,35 +819,60 @@ void add(element) {
                         maintainAspectRatio: false,
                         plugins: {
                             title: { display: false },
-                            legend: { position: 'bottom', labels: { usePointStyle: true } }
+                            legend: { position: 'bottom', labels: { usePointStyle: true, color: textColor } }
                         },
                         scales: {
                             x: {
-                                title: { display: true, text: 'Input Size (N)', font: { weight: 'bold' } }
+                                title: { display: true, text: 'Input Size (N)', font: { weight: 'bold' }, color: textColor },
+                                ticks: { color: textColor },
+                                grid: { color: gridColor }
                             },
                             y: {
-                                title: { display: true, text: 'Number of Operations', font: { weight: 'bold' } },
+                                title: { display: true, text: 'Number of Operations', font: { weight: 'bold' }, color: textColor },
                                 type: 'logarithmic',
                                 min: 1,
                                 max: 10000,
                                 ticks: {
                                     callback: function(value, index, values) {
                                         return Number(value.toString()).toLocaleString();
-                                    }
-                                }
+                                    },
+                                    color: textColor
+                                },
+                                grid: { color: gridColor }
                             }
                         }
                     }
                 });
             }
 
-            renderChart();
+            // Theme Toggling Logic
+            function applyTheme(theme) {
+                document.documentElement.classList.remove('light', 'dark');
+                document.documentElement.classList.add(theme);
+                localStorage.setItem('theme', theme);
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                renderChart(); // Re-render chart to update colors
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            });
+
+            // Initialize theme from localStorage or default to light
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+
             populatePracticalTable();
             populateExampleSelector();
-            updateExampleDisplay(); // Set initial display for the first example
+            updateExampleDisplay(); 
             populateCaseSelector();
-            updateCaseDisplay(); // Set initial display for the first case analysis
+            updateCaseDisplay(); 
             populateDsComplexityTable();
+            populateDetailedComplexityTables(); // New function call
+            
             // Trigger initial display for Time Complexity Deep Dive
             timeTabContainer.querySelector('.tab-btn').click();
             // Trigger initial display for Space Complexity Deep Dive
